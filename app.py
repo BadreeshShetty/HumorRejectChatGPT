@@ -186,16 +186,19 @@ def main():
         else null}.'''
         
         st.header("Please wait for the Hand (Should take approx a minute or so!)")
+        st.subheader("Till it loads you can talk to the hand! - Terminator")
         with st_lottie_spinner(lottie_download, reverse=True, height=400, width=400, speed=1,   loop=True, quality='high', key="hand"):
             gpt_response_resume = get_response(message_prompt,system_prompt)
             
             gpt_response_resume_json = json.loads(gpt_response_resume)
 
             if job_descripion and gpt_response_resume_json:
-                    system_prompt = '''You are an ATS Job Assistant for the company mentioned in the job description, provide a reply email with a sarcastic subject
-                    in a humorous way showing he/she/they is being rejected and is not considered for the job role based on the resume even without even giving a chance. 
-                    Spit Relevant Funny facts based on resume and job description. Additionally give serious constructive feedback on how the user can improve himself 
-                    overall and specific changes to the resume based on this job description.'''
+                    system_prompt = '''You are an ATS Job Assistant for the company mentioned in the job description, provide a reply email with a sarcastic subject.
+                    Respond with 3 paragraphs:
+                    1) Showing rejection in a humorous way that he/she/they isn't considered for the role based on the resume even without even giving a chance.
+                    2) Spit relevant funny facts based on the resume and job description. 
+                    3) Additionally give serious constructive feedback as bullet points on how the user can improve his/her/their chances for the job role
+                    identifying specific details to the resume based on the job description provided.'''
                     message_prompt ='''
                     Based on the details of the user'''+str(gpt_response_resume_json)+'''
                     mentioned on the job description here:'''+str(job_descripion)+''' Be Funny in theme. 
