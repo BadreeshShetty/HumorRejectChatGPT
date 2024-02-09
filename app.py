@@ -177,7 +177,7 @@ def main():
         intrapersonal_skills: if intrapersonal skills then [extract_skills_mentioned_throughout_in_resume] 
         else null}.'''
         
-        st.header("Please wait for the Hand to Stop (Should take approx a minute or so!)")
+        st.header("Please wait for the Hand (Should take approx a minute or so!)")
         with st_lottie_spinner(lottie_download, reverse=True, height=400, width=400, speed=1,   loop=True, quality='high', key="hand"):
             gpt_response_resume = get_response(message_prompt,system_prompt)
             
