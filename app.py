@@ -3,16 +3,16 @@ import json
 import re
 import openai
 import time
+import os
 import requests
 from streamlit_lottie import st_lottie_spinner
 
-from pdf2image import convert_from_bytes
-from PIL import Image
-
 from PyPDF2 import PdfReader
 
-from dotenv import load_dotenv,find_dotenv
+from dotenv import load_dotenv  
 
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def load_lottieurl(url: str):
     r = requests.get(url)
@@ -109,7 +109,7 @@ def technical_skills(gpt_response_resume_json):
         
 
 def call_extracted_gpt_base(gpt_response_resume_json):
-    st.header("Base Info:")
+    st.header("Info on User:")
     extracted_gpt_base(gpt_response_resume_json,"full_name","Full Name:")
     extracted_gpt_base(gpt_response_resume_json,"email","Email:")
     extracted_gpt_base(gpt_response_resume_json,"phone_number","Phone Number:")
@@ -132,20 +132,26 @@ def call_extracted_gpt_base(gpt_response_resume_json):
 
 
 def main():
-    _ = load_dotenv(find_dotenv())
-
+   
     lottie_url_hand="https://lottie.host/c6d296de-3a71-44bf-b16f-4b72fa0e96a2/tfVAlnaamt.json"
     lottie_download = load_lottieurl(lottie_url_hand)
+
+    # lottie_url_dog="https://lottie.host/2aa2030b-b237-497b-ac76-ed915ac6f280/tMGAyw3bh5.json"
+    # lottie_download_dog=load_lottieurl(lottie_url_dog)
 
     st.set_page_config(
     page_title = 'Job Rejection Humor',
     page_icon = '✅',
     layout = 'wide')
 
+    st.title("Disclaimer: Below generated response is by ChatGPT")
+
+    st.divider()
+
     st.title("Add Job Description here:")
     job_descripion=st.text_area(
                             height=100,
-                            label="Add the Job Description",
+                            label="Job Description",
                             key="Job Description"
                         )
 
@@ -161,16 +167,16 @@ def main():
         # selected_page = st.selectbox("Select a page", page_numbers)
         # selected_page -= 1
         # Convert the selected page to an image
-        images = convert_from_bytes(pdf_file.getvalue())
+        # images = convert_from_bytes(pdf_file.getvalue())
         # image = images[selected_page]
-        image = images[0]
+        # image = images[0]
 
         # Create two columns to display the image and text
         # col1, col2 = st.columns(2)
-        left_co, cent_co,last_co = st.columns(3)
+        # left_co, cent_co,last_co = st.columns(3)
 
         # Display the image in the first column
-        cent_co.image(image, caption=f"Page {0 + 1}")
+        # cent_co.image(image, caption=f"Page {0 + 1}")
 
         pdf_str=read_pdf_page(pdf_file, 0)
 
@@ -190,37 +196,34 @@ def main():
         else null}.'''
         
         ## This code will send the request and display the response
-        with st_lottie_spinner(lottie_download, reverse=True, height=400, width=400, speed=1,   loop=True, quality='high', key="download1"):
+        # with st_lottie_spinner(lottie_download, reverse=True, height=400, width=400, speed=1,   loop=True, quality='high', key="hand"):
+        with st_lottie_spinner(lottie_download, reverse=True, height=400, width=400, speed=1,   loop=True, quality='high', key="hand"):
             gpt_response_resume = get_response(message_prompt,system_prompt)
         # print(gpt_response_resume)
             
-          
+            gpt_response_resume_json = json.loads(gpt_response_resume)
 
-        
-        gpt_response_resume_json = json.loads(gpt_response_resume)
+            # gpt_response_resume_json['basic_info']['first_name']
 
-        gpt_response_resume_json['basic_info']['first_name']
+            # with last_co:
+            # st.toast('Correct! if Extraction is wrong')
+            # time.sleep(.5)
 
-        # with last_co:
-        # st.toast('Correct! if Extraction is wrong')
-        # time.sleep(.5)
+            # call_extracted_gpt_base(gpt_response_resume_json)
 
-        # call_extracted_gpt_base(gpt_response_resume_json)
+            
+            if job_descripion and gpt_response_resume_json:
+                    system_prompt = '''You are an ATS Job Assistant for the company mnetioned in the job description, provide the reply email with a sarcastic subject
+                    in a humorous way showing he/she/they is being rejected and is not considered for the job role based on the resume even without even giving a chance. 
+                    Spit Relevant Funny facts based on resume and job description. Additionally give serious suggestions on how the user can improve himself 
+                    overall and specific changes to the resume based on this job description.'''
+                    message_prompt ='''
+                    Based on the details of the user'''+str(gpt_response_resume_json)+'''
+                    mentioned on the job description here:'''+str(job_descripion)+''' Be Funny in theme. 
+                    Reject in a very funny way demoralizing,mocking and motivating him/her/them at the same time. End with company regards.'''
 
-        
-        if job_descripion and gpt_response_resume_json:
-            with st_lottie_spinner(lottie_download, reverse=True, height=400, width=400, speed=1,   loop=True, quality='high', key="download2"):
-    
-                system_prompt = '''You are an ATS Job Assistant for the company mnetioned in the job description, provide the reply email in a humorous way showing 
-                he/she/they is being rejected and is not considered for the job role based on the resume even without even giving a chance. Spit Relevant 
-                Funny facts based on resume and job description. Additionally give serious suggestions on how the user can improve himself 
-                overall and specific changes to the resume based on this job description.'''
-                message_prompt ='''
-                Based on the details of the user'''+str(gpt_response_resume_json)+'''
-                mentioned on the job description here:'''+str(job_descripion)+''' Reject in a very funny way demoralizing,mocking him/her/them and motivating him/her/them at the same time.'''
-
-                gpt_response_jd = get_response(message_prompt,system_prompt)
-                st.header(gpt_response_jd)
+                    gpt_response_jd = get_response(message_prompt,system_prompt)
+                    st.header(gpt_response_jd)
             
 
 
