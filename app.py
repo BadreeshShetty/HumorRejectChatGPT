@@ -147,11 +147,19 @@ def main():
     st.divider()
 
     st.title("Add Job Description here:")
-    job_descripion=st.text_area(
-                            height=100,
-                            label="Job Description",
-                            key="Job Description"
-                        )
+
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        job_descripion=st.text_area(
+                                height=850,
+                                label="Job Description",
+                                key="Job Description"
+                            )
+    with col2:
+        st.subheader("Copy Job Description as highlighted below")
+        st.image("JD.png")
+
 
     st.title("Please Upload One Page Resume PDF to see the rejection faster than speed of dark")
 
@@ -184,9 +192,9 @@ def main():
             gpt_response_resume_json = json.loads(gpt_response_resume)
 
             if job_descripion and gpt_response_resume_json:
-                    system_prompt = '''You are an ATS Job Assistant for the company mnetioned in the job description, provide the reply email with a sarcastic subject
+                    system_prompt = '''You are an ATS Job Assistant for the company mentioned in the job description, provide a reply email with a sarcastic subject
                     in a humorous way showing he/she/they is being rejected and is not considered for the job role based on the resume even without even giving a chance. 
-                    Spit Relevant Funny facts based on resume and job description. Additionally give serious suggestions on how the user can improve himself 
+                    Spit Relevant Funny facts based on resume and job description. Additionally give serious constructive feedback on how the user can improve himself 
                     overall and specific changes to the resume based on this job description.'''
                     message_prompt ='''
                     Based on the details of the user'''+str(gpt_response_resume_json)+'''
@@ -195,7 +203,7 @@ def main():
 
                     gpt_response_jd = get_response(message_prompt,system_prompt)
                     st.header(gpt_response_jd)
-            
+        st.stop()
 
 
 if __name__ == '__main__':
