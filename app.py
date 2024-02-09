@@ -106,8 +106,6 @@ def technical_skills(gpt_response_resume_json):
     skills = ', '.join(map(str, gpt_response_resume_json["technical_skills"])) 
     key=st.text_area(label="Technical Skills",height=200,value=skills)
 
-        
-
 def call_extracted_gpt_base(gpt_response_resume_json):
     st.header("Info on User:")
     extracted_gpt_base(gpt_response_resume_json,"full_name","Full Name:")
@@ -161,22 +159,6 @@ def main():
     pdf_file = st.file_uploader("Upload a PDF file", type=["pdf"])
 
     if pdf_file:
-        # Create a selectbox to choose the page number
-        # pdfReader = PdfReader(pdf_file)
-        # page_numbers = list(range(1, len(pdfReader.pages)+1))
-        # selected_page = st.selectbox("Select a page", page_numbers)
-        # selected_page -= 1
-        # Convert the selected page to an image
-        # images = convert_from_bytes(pdf_file.getvalue())
-        # image = images[selected_page]
-        # image = images[0]
-
-        # Create two columns to display the image and text
-        # col1, col2 = st.columns(2)
-        # left_co, cent_co,last_co = st.columns(3)
-
-        # Display the image in the first column
-        # cent_co.image(image, caption=f"Page {0 + 1}")
 
         pdf_str=read_pdf_page(pdf_file, 0)
 
@@ -195,23 +177,11 @@ def main():
         intrapersonal_skills: if intrapersonal skills then [extract_skills_mentioned_throughout_in_resume] 
         else null}.'''
         
-        ## This code will send the request and display the response
-        # with st_lottie_spinner(lottie_download, reverse=True, height=400, width=400, speed=1,   loop=True, quality='high', key="hand"):
         with st_lottie_spinner(lottie_download, reverse=True, height=400, width=400, speed=1,   loop=True, quality='high', key="hand"):
             gpt_response_resume = get_response(message_prompt,system_prompt)
-        # print(gpt_response_resume)
             
             gpt_response_resume_json = json.loads(gpt_response_resume)
 
-            # gpt_response_resume_json['basic_info']['first_name']
-
-            # with last_co:
-            # st.toast('Correct! if Extraction is wrong')
-            # time.sleep(.5)
-
-            # call_extracted_gpt_base(gpt_response_resume_json)
-
-            
             if job_descripion and gpt_response_resume_json:
                     system_prompt = '''You are an ATS Job Assistant for the company mnetioned in the job description, provide the reply email with a sarcastic subject
                     in a humorous way showing he/she/they is being rejected and is not considered for the job role based on the resume even without even giving a chance. 
